@@ -64,7 +64,7 @@
 						'<li>',
 						task[0] == 'list5' ? '' : chk.join(''),
 						'<span class="tasktitle">',task[1],'</span><br/>',
-						task[2],
+						'<span class="taskcontent">',task[2],'</span>',
 						'</li>'
 					].join(''));
 			}
@@ -112,30 +112,34 @@
 </script>
 <style type="text/css">
 	body {
-		background: #393;
-		font-size: 14pt;
+		background-color: #360;
+		width: 1400px;
+		font-size: 12pt;
 	}
 	textarea {
 		float: left;
 		background: #cf9;
-		font-size: 14pt;
+		font-size: 12pt;
 		vertical-align: top;
 	}
 
 	.board {
-		background: #ccc;
+		background-color: #ccc;
 		width:auto;
 	}
 	.list {
 		float: left;
 		margin: 0 5px;
-		background: #3c3;
+		background-color: #393;
 		width: 250px;
 		height: auto;
-		border-radius: 15px;		
+		border-radius: 15px;
+		border: 1px solid #ccc;		
 	}
 	.list h4 {
-		margin: 2px 10px;
+		margin: 8px 15px 2px;
+		font-weight: bold;
+		color: #fff;
 	}
 	.list ul {
 		margin: 0;
@@ -143,7 +147,7 @@
 		list-style-type:none
 	}
 	.list ul li {
-		background: #3c3;
+		background-color: #cf9;
 		width: 220px;
 		min-height: 60px;
 		margin: 10px 5px;
@@ -152,8 +156,12 @@
 		border: 2px solid #fff;
 	}
 	.tasktitle {
-		font-size: 12pt;
+		font-size: 12px;
 	}
+	.taskcontent {
+		display: block;
+		margin: 5px;
+	}	
 
 	#addSection {
 		height: 80px;
@@ -166,7 +174,8 @@
 		color: #fff;
 	}
 	#btnAdd {
-		padding:5px 15px;
+		padding:5px 10px;
+		background-color: #fff;
 		border-radius: 5px;
 		border:1px solid #000;
 	}
@@ -174,13 +183,14 @@
 	#listSection {
 		clear: both;	
 	}
-	#list1 li { background: #c9f; }
-	#list2 li { background: #fc6; }
-	#list3 li { background: #6cf; }
-	#list4 li { background: #f66; }
+	#list1 li { background-color: #090; }
+	#list2 li { background-color: #fc6; }
+	#list3 li { background-color: #f66; }
+	#list4 li { background-color: #6cf; }
 	#list5 li { 
-		background: #333; 
-		color: #fff;
+		background-color: #333; 
+		color: #999;
+		border: 2px solid #666;
 		text-decoration: line-through;
 	}	
 </style>
@@ -196,7 +206,7 @@
 				<input type="radio" name="chooseList" value="list4">Waiting
 				<input type="radio" name="chooseList" value="list5"><del>Done</del>
 				<br/>
-				Deadline: <input type="text" size="10" name="deadline" placeholder="yyyy/mm/dd">
+				Deadline: <input type="text" size="12" name="deadline" placeholder="yyyy/mm/dd">
 				<input type="submit" id="btnAdd" value="Create Task">
 			</div>
 		</div>
