@@ -61,7 +61,7 @@
 
 				chk = ['<input type="checkbox" name="task" value="',itemKey,'" onClick="deleteTask(',itemKey,');"/>'];
 				AllTasks[task[0]].push([
-						'<li>',
+						'<li class="dragtask" draggable="true" key="',itemKey,'">',
 						task[0] == 'list5' ? '' : chk.join(''),
 						'<span class="tasktitle">',task[1],'</span><br/>',
 						'<span class="taskcontent">',task[2],'</span>',
@@ -80,7 +80,9 @@
 
 				document.getElementById(idxList).innerHTML = tasks;
 			}
-			
+
+
+			handleDragnDrop();
 		}
 	}
 
@@ -89,6 +91,16 @@
 		var task = localStorage.getItem(key);
 		task = task.split(";");	
 		task[0] = 'list5';
+		localStorage.setItem(key, task.join(';'));
+
+		getTasks();
+	}
+
+	function changeList(key, listid)
+	{
+		var task = localStorage.getItem(key);
+		task = task.split(";");	
+		task[0] = listid;
 		localStorage.setItem(key, task.join(';'));
 
 		getTasks();
@@ -109,6 +121,73 @@
 
 		getTasks();
 	}	
+
+	function handleDragnDrop()
+	{
+		// Get the div element that will serve as the drop target.
+		var dropLists    = document.querySelectorAll('.list');
+
+		// Get the draggable elements.
+		var dragElements = document.querySelectorAll('.list ul li.dragtask');
+
+		// Track the element that is being dragged.
+		var elementDragged = null;
+
+		for (var i=0;i<dragElements.length;i++) 
+		{
+			// Event Listener for when the drag interaction starts.
+			dragElements[i].addEventListener('dragstart', function(e) {
+				e.dataTransfer.effectAllowed = 'move';
+				e.dataTransfer.setData('text', this.getAttribute("key"));
+				elementDragged = this;
+			});
+
+			// Event Listener for when the drag interaction finishes.
+			dragElements[i].addEventListener('dragend', function(e) {
+				elementDragged = null;
+			});
+		}
+
+		for (var i=0;i<dropLists.length;i++) 
+		{
+			// Event Listener for when the dragged element is over the drop list.
+			dropLists[i].addEventListener('dragover', function(e) {
+				if (e.preventDefault) {
+					e.preventDefault();
+				}
+				e.dataTransfer.dropEffect = 'move';
+				return false;
+			});
+
+			// Event Listener for when the dragged element enters the drop list.
+			dropLists[i].addEventListener('dragover', function(e) {
+				// using dragover overload browser's work, 
+				// but using dragenter has poor visualization  
+				this.className = "list dragover";
+			});
+
+			// Event Listener for when the dragged element leaves the drop list.
+			dropLists[i].addEventListener('dragleave', function(e) {
+				this.className = "list";
+			});
+
+			// Event Listener for when the dragged element dropped in the drop list.
+			dropLists[i].addEventListener('drop', function(e) {
+				if (e.preventDefault) e.preventDefault(); 
+				if (e.stopPropagation) e.stopPropagation();
+
+				this.className = "list";
+
+				// using lastChild to get ul id
+				// it could be better
+				itemKey = e.dataTransfer.getData('text');
+				newList = this.lastChild.id;
+				changeList(itemKey, newList);
+
+				return false;
+			});
+		}
+	}
 </script>
 <style type="text/css">
 	body {
@@ -193,6 +272,11 @@
 		border: 2px solid #666;
 		text-decoration: line-through;
 	}	
+
+	.dragover {
+	    background-color: #ccc;
+	    border: 2px dashed #666;
+	}
 </style>
 
 <body onLoad="browserCheck();getTasks();">
@@ -213,25 +297,10 @@
 		</form>
 	</div>
 	<div id="listSection" class="board">
-		<div class="list">
-			<h4>Backlog</h4>
-			<ul id="list1"><li>Nothing much to do!</li></ul>
-		</div>
-		<div class="list">    		
-			<h4>Todo</h4>
-			<ul id="list2"><li>Nothing much to do!</li></ul>
-		</div>
-		<div class="list">
-			<h4>Doing</h4>
-			<ul id="list3"><li>Nothing much to do!</li></ul>
-		</div>
-		<div class="list">
-			<h4>Waiting</h4>
-			<ul id="list4"><li>Nothing much to do!</li></ul>
-		</div>
-		<div class="list">    		
-			<h4><a href="#" onclick="deleteDone();return false;">Done</a></h4>
-			<ul id="list5"><li>Nothing much to do!</li></ul>
-		</div>
+		<div class="list"><h4>Backlog</h4><ul id="list1"><li>Nothing much to do!</li></ul></div>
+		<div class="list"><h4>Todo</h4><ul id="list2"><li>Nothing much to do!</li></ul></div>
+		<div class="list"><h4>Doing</h4><ul id="list3"><li>Nothing much to do!</li></ul></div>
+		<div class="list"><h4>Waiting</h4><ul id="list4"><li>Nothing much to do!</li></ul></div>
+		<div class="list"><h4><a href="#" onclick="deleteDone();return false;">Done</a></h4><ul id="list5"><li>Nothing much to do!</li></ul></div>
 	</div>
 </body>
